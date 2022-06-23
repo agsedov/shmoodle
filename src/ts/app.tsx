@@ -16,9 +16,18 @@ export function App(props:any) {
   let [moodlePrivateToken,setMoodlePrivateToken] = React.useState<string>("");
   let successCallback = (tokenResponse: any) => {
     setMoodleToken(tokenResponse.token);
+    localStorage.setItem("moodleToken", tokenResponse.token);
     setMoodlePrivateToken(tokenResponse.moodlePrivateToken);
     setLoggedIn(true);
   };
+  React.useEffect(()=>{
+    let token = localStorage.getItem("moodleToken");
+    if(token){
+      setMoodleToken(token);
+      setLoggedIn(true);
+    }
+  },[]);
+
   if(!loggedIn){
     return <Login onLogin = {(result: any)=>{afterLogin(result,successCallback)}} />
   }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Courses} from './activities/courses';
-import {Grader} from  './activities/grader';
+import {GradeSelector} from  './activities/gradeselector';
 
 export type Activity = "courses" | "grader";
 
@@ -17,7 +17,7 @@ export function Layout(props: any) {
     return <Courses {...activityProps} changeActivity={changeActivity}/>;
   };
   if(activity == "grader"){
-    return <Grader  {...activityProps} changeActivity={changeActivity}/>;
+    return <GradeSelector  {...activityProps} changeActivity={changeActivity}/>;
   }
   return <h4>Something is wrong</h4>;
 }
