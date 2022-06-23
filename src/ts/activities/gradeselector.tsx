@@ -38,7 +38,7 @@ export function GradeSelector(props:GradeSelectorProps){
     {(groupList.length==0)?"":
     <select value={selectedGroup}
             onChange={(e)=>setSelectedGroup(parseInt(e.target.value))}>
-      {groupList.map(info=><option value={info.id}>{info.name}</option>)}
+      {groupList.map(info=><option key={info.id} value={info.id}>{info.name}</option>)}
     </select>}
 
   </div>;
