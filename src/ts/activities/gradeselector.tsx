@@ -1,18 +1,13 @@
 import * as React from 'react';
-import {gradeItemsRequest, groupsRequest,
-        UserGrade, GradeItem} from './../moodleapi';
-import {LoginContext} from './../app'
+import {groupsRequest} from './../moodleapi';
+import {LoginContext} from './../app';
+import {GradeList} from '../gradelist';
 
 export interface GradeSelectorProps {
   changeActivity: any;
   courseid?: number;
 }
 
-function getGrades(token: string, courseid: number) {
-    gradeItemsRequest(token, courseid, (response)=> {
-      let usergrades = response.usergrades as Array<UserGrade>;
-    });
-}
 
 interface GroupInfo{
   id: number,
@@ -40,6 +35,7 @@ export function GradeSelector(props:GradeSelectorProps){
             onChange={(e)=>setSelectedGroup(parseInt(e.target.value))}>
       {groupList.map(info=><option key={info.id} value={info.id}>{info.name}</option>)}
     </select>}
-
-  </div>;
+    <GradeList groupId={selectedGroup}
+              courseid={props.courseid}
+    /></div>;
 }
