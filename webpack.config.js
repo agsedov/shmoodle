@@ -11,10 +11,27 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[hash:base64]", // default
+                auto: true // default
+              },
+              sourceMap: true
+            }
+          },
+        ]
+      },
+
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.css'],
   },
   output: {
     filename: 'bundle.js',

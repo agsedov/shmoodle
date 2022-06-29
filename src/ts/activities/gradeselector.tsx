@@ -2,7 +2,6 @@ import * as React from 'react';
 import {groupsRequest} from './../moodleapi';
 import {LoginContext} from './../app';
 import {GradeList} from '../gradelist';
-
 export interface GradeSelectorProps {
   changeActivity: any;
   courseid?: number;

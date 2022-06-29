@@ -1,0 +1,19 @@
+.grade_user_container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.grade_user_grade {
+  display: inline;
+  font-size: 3em;
+  padding: 0.5em;
+}
+
+.grade_user_name {
+  display: inline;
+  font-size: 3em;
+  padding: 0.5em;
+}
+
+.grade_user_grades {
+}
