@@ -2,6 +2,8 @@ import * as React from 'react';
 import {groupsRequest} from './../moodleapi';
 import {LoginContext} from './../app';
 import {GradeList} from '../gradelist';
+import styles from './../../css/main.module.css';
+
 export interface GradeSelectorProps {
   changeActivity: any;
   courseid?: number;
@@ -30,7 +32,8 @@ export function GradeSelector(props:GradeSelectorProps){
   },[]);
   return <div>
     {(groupList.length==0)?"":
-    <select value={selectedGroup}
+    <select className={styles.select}
+            value={selectedGroup}
             onChange={(e)=>setSelectedGroup(parseInt(e.target.value))}>
       {groupList.map(info=><option key={info.id} value={info.id}>{info.name}</option>)}
     </select>}

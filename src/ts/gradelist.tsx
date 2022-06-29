@@ -65,17 +65,18 @@ function GradeUser(props: GradeUserProps){
     setTouchInitialY(0);
   }
 
-  let color = (touchResult()==0) ? "gray" : (touchResult() > 0? "green" : "red");
-  let diffcolor = (props.diff>0) ? "lime" : (props.diff<0 ? "pink" : "gray" );
-
+  let color = (touchResult()==0) ? "#ccc" : (touchResult() > 0? "green" : "red");
+  let diffcolor = (props.diff>0) ? "lime" : (props.diff<0 ? "red" : "white" );
+  let diffText = props.diff > 0 ? ("+"+props.diff) : props.diff.toString();
   return <div onTouchStart = {ontouchstart}
                onTouchMove = {ontouchmove}
-                onTouchEnd = {ontouchend}
+    onTouchEnd = {ontouchend}
+    className = {styles.list_element}
     style = {{backgroundColor:color, translate: Math.ceil(touchOffsetX/2)+"px 0px"}}>
     <div className={styles.grade_user_name}>{props.name}</div>
     <div className={styles.grade_user_grades}>
-      <div className={styles.grade_user_grade} style = {{color: diffcolor}}>{props.diff}</div>
       <div className={styles.grade_user_grade} >{props.value}</div>
+      <div className={styles.grade_user_grade} style = {{color: diffcolor}}>{diffText}</div>
     </div>
   </div>
 }
@@ -104,7 +105,9 @@ export function GradeList(props: GradeListProps) {
   }
   return <div>
     {gradeTypes.length>0?
-      <select value={selectedGrade}
+      <select
+        className={styles.select}
+        value={selectedGrade}
         onChange={(e)=>changeGrade(parseInt(e.target.value))}>
         {gradeTypes.map(gradetype=>
         <option key={gradetype.id} value={gradetype.id}>
@@ -117,6 +120,12 @@ export function GradeList(props: GradeListProps) {
                                      value={item.value}
                                       diff={item.diff}
                                       onChange={(newDiff)=>{changeDiff(item.id,newDiff)}}/>):""}
+    </div>
+    <div className = {styles.button+" "+styles.button_confirm}>
+      Send
+    </div>
+    <div className = {styles.button+" "+styles.button_reject}>
+      Cancel
     </div>
     </div>
 }

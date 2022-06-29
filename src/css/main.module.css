@@ -6,14 +6,61 @@
 .grade_user_grade {
   display: inline;
   font-size: 3em;
-  padding: 0.5em;
+  background: black;
+  color: #bfbfbf;
+  padding: 0.1em 0.3em;
 }
 
 .grade_user_name {
-  display: inline;
+  text-align: center;
   font-size: 3em;
-  padding: 0.5em;
 }
 
 .grade_user_grades {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.list_element {
+  display: flex;
+  flex-direction: column;
+  font-size: 2em;
+  border: 1px solid #7b7b7b;
+  padding: 0.1em;
+  margin: 0.3em;
+  box-shadow: aqua;
+  -webkit-box-shadow: 7px 6px 5px 1px rgba(0,0,0,0.31);
+  box-shadow: 7px 6px 5px 1px rgba(0,0,0,0.31);
+}
+
+.select {
+  font-size: 2em;
+}
+
+.button {
+  width: 100%;
+  color: white;
+  font-size: 4em;
+  text-align: center;
+  margin: 0.1em auto;
+  margin-top: 0.1em;
+  margin-right: auto;
+  margin-bottom: 0.1em;
+  margin-left: auto;
+  padding: 0.1em 0em;
+}
+
+.button_confirm {
+  background: rgb(2,0,36);
+  background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 25%, rgba(0,212,255,1) 100%);
+}
+.button_confirm:hover {
+  background: rgb(2,0,36);
+  background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 70%, rgba(0,212,255,1) 100%);
+}
+
+.button_reject {
+  background: rgb(154,0,0);
+  background: radial-gradient(circle, rgba(154,0,0,1) 0%, rgba(121,9,9,1) 40%, rgba(255,66,0,1) 100%);
 }
