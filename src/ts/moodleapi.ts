@@ -1,3 +1,5 @@
+import * as qs from 'qs';
+
 export interface MoodleCourseInfo {
   id: number,
   shortname: string,
@@ -18,37 +20,64 @@ export interface GradeItem {
   graderaw: number,
   gradeformatted: string
 }
-export async function wsRequest(token: string, wsfunction: string, body: string){
-  let link = "https://moodle.uniyar.ac.ru/webservice/rest/server.php";
-  const postBody = "wstoken="+token+"&wsfunction="+wsfunction+
-    "&moodlewsrestformat=json&"+body;
+export async function wsRequest(token: string, wsfunction: string, params: Object){
+  //let link = "https://moodle.uniyar.ac.ru/webservice/rest/server.php";
+  let link="http://localhost:8050/webservice/rest/server.php";
+  let postBody = {wstoken:token,wsfunction:wsfunction,moodlewsrestformat:"json"};
+  postBody = Object.assign(postBody, params);
+  let encoded = qs.stringify(postBody);//JSON.stringify(postBody);//new URLSearchParams(postBody);
   let response = await fetch(link,
     {
       method: "POST",
-      body: postBody,
+      body: encoded.toString() ,
       headers: {
-        'Content-Type' : 'application/x-www-form-urlencoded'
+        'content-Type' : 'application/x-www-form-urlencoded'
       }
     });
   return response.json();
 }
 
+ /**
+     * Update a grade item and, optionally, student grades
+     *
+     *  string $source       The source of the grade update
+     *  int $courseid        The course id
+     *  string $component    Component name
+     * @ param  int $activityid      The activity id
+     * int $itemnumber      The item number
+     * array  $grades      Array of grades
+     * array  $itemdetails Array of item details
+     * int                  A status flag
+     * @since Moodle 2.7
+  */
+export const updateGrades = async(courseid:number,
+                      // itemnumber:number,
+                       activityid:number,
+                            token:string,
+                           grades:Array<any>,
+                         callback:any) => {
+  let data = {courseid,itemnumber:0,/*activityid,*/ grades};
+  let response = await wsRequest(token,"core_grade_update_grades",data);//5090
+  callback(response as Array<MoodleCourseInfo>);
+}
+
+
 export const courseListRequest = async (token: string,
                                         callback: (response:Array<MoodleCourseInfo>)=>any) => {
-  let response = await wsRequest(token,"core_enrol_get_users_courses","userid=5090");
+                                          let response = await wsRequest(token,"core_enrol_get_users_courses",{userid:2});//5090
   callback(response as Array<MoodleCourseInfo>);
 }
 
 export const gradeItemsRequest = async (token: string,
                                         courseid: number,
                                         callback: (response:any)=>any) => {
-  let response = await wsRequest(token,"gradereport_user_get_grade_items", "courseid="+courseid);
+  let response = await wsRequest(token,"gradereport_user_get_grade_items", {courseid});
   callback(response);
 }
 export const groupsRequest = async (token: string,
                                     courseid: number,
                                     callback: (response:any)=>any) => {
-  let response = await wsRequest(token,"core_group_get_course_groups", "courseid="+courseid);
+  let response = await wsRequest(token,"core_group_get_course_groups", {courseid});
   callback(response);
 }
 

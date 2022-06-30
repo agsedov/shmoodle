@@ -6,7 +6,8 @@ interface LoginComponentProps{
 
 
 const keyRequest = async (username: string,password: string) => {
-  let link = "https://moodle.uniyar.ac.ru/login/token.php?service=moodle_mobile_app";
+  //let link = "https://moodle.uniyar.ac.ru/login/token.php?service=moodle_mobile_app";
+  let link = "http://localhost:8050/login/token.php?service=moodle_mobile_app";
   const postBody = "password="+ password+"&username="+username;
   let data = {password,username};
   let response = await fetch(link,
