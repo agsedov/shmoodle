@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {LoginContext} from './app';
 import {Assignment, createGradeStore, gradeStore, GradingStatus} from './gradestore';
-import {GradeItem, updateGrades} from './moodleapi';
+import {assignmentSaveGradesRequest, GradeItem, updateGrades} from './moodleapi';
 import styles from "./../css/main.module.css"
 interface GradeListProps {
   groupId: number;
@@ -111,6 +111,18 @@ export function GradeList(props: GradeListProps) {
       return item;
     }));
   }
+  let saveGrades = () => {
+      assignmentSaveGradesRequest(context.moodleToken,
+                                   selectedGrade,
+          gradingStatus.map((item)=>
+            {return {userid: item.id,
+                     grade: (item.value+item.diff)+".0",
+                     attemptnumber: -1,
+                    addattempt: 0,
+                 workflowstate:"AAA"
+            };}),
+        ()=>{});
+  }
   return <div>
     {gradeTypes.length>0?
       <select
@@ -131,12 +143,7 @@ export function GradeList(props: GradeListProps) {
                                       onChange={(newDiff)=>{changeDiff(item.id,newDiff)}}/>):""}
     </div>
     <div className = {styles.button+" "+styles.button_confirm}
-      onClick = {()=>{updateGrades(props.courseid,
-                                    selectedGrade,
-                              context.moodleToken,
-          [/*{id: 1, graderaw:2, grade:3, value:1},{id: 2, graderaw:2, grade:3, value:1}*/],
-      (a:any)=>{console.log(a)}
-                                  )}}>
+      onClick = {saveGrades}  >
       Send
     </div>
     <div className = {styles.button+" "+styles.button_reject}>

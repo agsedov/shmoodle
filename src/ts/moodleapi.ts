@@ -106,3 +106,20 @@ export const assignmentGradesRequest = async (token: string,
   let response = await wsRequest(token,"mod_assign_get_grades", {assignmentids:[assignmentid]});
   callback(response);
 }
+
+interface SaveGrade {
+  userid : number,
+    grade: string,
+    attemptnumber: number,
+    addattempt: number,
+    workflowstate: string
+}
+
+export const assignmentSaveGradesRequest = async (token: string,
+  assignmentid: number,
+  gradeArray: Array<SaveGrade>,
+  callback: (response:any)=>any) => {
+    let requestParams = {assignmentid, applytoall: 0, grades: gradeArray };
+  let response = await wsRequest(token,"mod_assign_save_grades", requestParams);
+  callback(response);
+}
