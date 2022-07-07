@@ -22,7 +22,7 @@ export interface GradeItem {
 }
 export async function wsRequest(token: string, wsfunction: string, params: Object){
   //let link = "https://moodle.uniyar.ac.ru/webservice/rest/server.php";
-  let link="http://localhost:8050/webservice/rest/server.php";
+  let link="http://localhost:5000/webservice/rest/server.php";
   let postBody = {wstoken:token,wsfunction:wsfunction,moodlewsrestformat:"json"};
   postBody = Object.assign(postBody, params);
   let encoded = qs.stringify(postBody);//JSON.stringify(postBody);//new URLSearchParams(postBody);
@@ -81,6 +81,28 @@ export const groupsRequest = async (token: string,
   callback(response);
 }
 
+export const assignmentsRequest = async (token: string,
+                                         courseid: number,
+                                         callback: (response:any)=>any) => {
+  let response = await wsRequest(token,"mod_assign_get_assignments", {courseids:[courseid]});
+  callback(response);
+}
 
+export const usersRequest = async (token: string,
+  courseid: number,
+  groupid:number,
+  callback: (response:any)=>any) => {
+    let params = {courseid: courseid} as any;
+    if(groupid!=0){
+      params.groupid = groupid;
+    }
+  let response = await wsRequest(token,"core_enrol_get_enrolled_users", params);
+  callback(response);
+}
 
-
+export const assignmentGradesRequest = async (token: string,
+                                              assignmentid: number,
+                                              callback: (response:any)=>any) => {
+  let response = await wsRequest(token,"mod_assign_get_grades", {assignmentids:[assignmentid]});
+  callback(response);
+}

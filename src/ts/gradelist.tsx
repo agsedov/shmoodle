@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {LoginContext} from './app';
-import {createGradeStore, gradeStore, GradingStatus} from './gradestore';
+import {Assignment, createGradeStore, gradeStore, GradingStatus} from './gradestore';
 import {GradeItem, updateGrades} from './moodleapi';
 import styles from "./../css/main.module.css"
 interface GradeListProps {
@@ -82,18 +82,26 @@ function GradeUser(props: GradeUserProps){
 }
 export function GradeList(props: GradeListProps) {
   let context = React.useContext(LoginContext);
-  let [gradeTypes,setGradeTypes] = React.useState<Array<GradeItem>>([]);
+  let [gradeTypes,setGradeTypes] = React.useState<Array<Assignment>>([]);
   let [selectedGrade, setSelectedGrade] = React.useState<number>(0);
   let [gradingStatus, setGradingStatus] = React.useState<Array<GradingStatus>>([]);
   React.useEffect(()=>{
     let gradeStore = createGradeStore(context.moodleToken, props.courseid);
     gradeStore.update(()=>{
-      setGradeTypes(gradeStore.getGradeTypes());
+      setGradeTypes(gradeStore.getAssignments());
     });
   },[]);
+
+  React.useEffect(()=>{
+    gradeStore.setGroupId(props.groupId);
+    setGradingStatus(gradeStore.getGradeStatus(selectedGrade));
+  },[props.groupId]);
+
   let changeGrade = (gradeId: number) => {
     setSelectedGrade(gradeId);
-    setGradingStatus(gradeStore.getGradeStatus(gradeId));
+    gradeStore.fetchGrades(gradeId, ()=>{
+      setGradingStatus(gradeStore.getGradeStatus(gradeId));
+    });
   }
   let changeDiff = (id:number, newDiff: number) => {
     setGradingStatus(gradingStatus.map(item=> {
@@ -111,12 +119,13 @@ export function GradeList(props: GradeListProps) {
         onChange={(e)=>changeGrade(parseInt(e.target.value))}>
         {gradeTypes.map(gradetype=>
         <option key={gradetype.id} value={gradetype.id}>
-          {gradetype.itemname}
+          {gradetype.name}
         </option>)}
       </select>:""}
     <div className={styles.grade_user_container}>
     {(selectedGrade!==0)?
-        gradingStatus.map((item) => <GradeUser name={item.name}
+      gradingStatus.map((item) => <GradeUser name={item.name}
+                                        key={item.id}
                                      value={item.value}
                                       diff={item.diff}
                                       onChange={(newDiff)=>{changeDiff(item.id,newDiff)}}/>):""}
