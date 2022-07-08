@@ -25,7 +25,10 @@ export function Courses(props: CoursesProps){
   }
 
   useEffect(()=>{
-    courseListRequest(context.moodleToken,gotCourses);
+    courseListRequest(context.moodleToken,context.userId, gotCourses,()=>{
+      context.setLoggedIn(false);
+      context.setMoodleToken(null);
+    });
   },[]);
 
 

@@ -4,10 +4,8 @@ interface LoginComponentProps{
   onLogin: any;
 }
 
-
 const keyRequest = async (username: string,password: string) => {
-  //let link = "https://moodle.uniyar.ac.ru/login/token.php?service=moodle_mobile_app";
-  let link = "http://localhost:5000/login/token.php?service=moodle_mobile_app";
+  let link = (window as any).siteurl + "/login/token.php?service=moodle_mobile_app";
   const postBody = "password="+ password+"&username="+username;
   let data = {password,username};
   let response = await fetch(link,

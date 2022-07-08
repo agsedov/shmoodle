@@ -21,8 +21,7 @@ export interface GradeItem {
   gradeformatted: string
 }
 export async function wsRequest(token: string, wsfunction: string, params: Object){
-  //let link = "https://moodle.uniyar.ac.ru/webservice/rest/server.php";
-  let link="http://localhost:5000/webservice/rest/server.php";
+  let link=(window as any).siteurl + "/webservice/rest/server.php";
   let postBody = {wstoken:token,wsfunction:wsfunction,moodlewsrestformat:"json"};
   postBody = Object.assign(postBody, params);
   let encoded = qs.stringify(postBody);//JSON.stringify(postBody);//new URLSearchParams(postBody);
@@ -34,9 +33,25 @@ export async function wsRequest(token: string, wsfunction: string, params: Objec
         'content-Type' : 'application/x-www-form-urlencoded'
       }
     });
-  return response.json();
+  let json = await response.json();
+  if(json.exception) {
+    if(json.errorcode == "invalidtoken"){
+      throw "logout";
+    }else{
+      console.warn("requestParams:", postBody);
+      console.warn("error code:", json.errorcode);
+      console.warn("error message:", json.message);
+    }
+  }
+  return json;
 }
 
+
+export const getSiteInfo = async(token:string,
+                                 callback: any,
+                                 reject: any) => {
+  wsRequest(token, "core_webservice_get_site_info",{}).then(callback,reject);
+}
  /**
      * Update a grade item and, optionally, student grades
      *
@@ -57,15 +72,16 @@ export const updateGrades = async(courseid:number,
                            grades:Array<any>,
                          callback:any) => {
   let data = {courseid,itemnumber:0,/*activityid,*/ grades};
-  let response = await wsRequest(token,"core_grade_update_grades",data);//5090
+  let response = await wsRequest(token,"core_grade_update_grades",data);
   callback(response as Array<MoodleCourseInfo>);
 }
 
 
-export const courseListRequest = async (token: string,
-                                        callback: (response:Array<MoodleCourseInfo>)=>any) => {
-                                          let response = await wsRequest(token,"core_enrol_get_users_courses",{userid:2});//5090
-  callback(response as Array<MoodleCourseInfo>);
+export const courseListRequest = async (token: string, userid: Number,
+  callback: (response:Array<MoodleCourseInfo>)=>any,
+  reject: any) => {
+    wsRequest(token,"core_enrol_get_users_courses",{userid}).then(callback,reject);
+    //callback(response as Array<MoodleCourseInfo>);
 }
 
 export const gradeItemsRequest = async (token: string,
