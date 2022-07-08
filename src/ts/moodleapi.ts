@@ -34,7 +34,7 @@ export async function wsRequest(token: string, wsfunction: string, params: Objec
       }
     });
   let json = await response.json();
-  if(json.exception) {
+  if(json && json.exception) {
     if(json.errorcode == "invalidtoken"){
       throw "logout";
     }else{

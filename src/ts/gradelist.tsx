@@ -121,7 +121,11 @@ export function GradeList(props: GradeListProps) {
                     addattempt: 0,
                  workflowstate:"AAA"
             };}),
-        ()=>{});
+        ()=>{
+          gradeStore.fetchGrades(selectedGrade, ()=>{
+            setGradingStatus(gradeStore.getGradeStatus(selectedGrade));
+          });
+        });
   }
   return <div>
     {gradeTypes.length>0?
