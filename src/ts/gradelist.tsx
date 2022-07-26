@@ -3,6 +3,7 @@ import {LoginContext} from './app';
 import {Assignment, createGradeStore, gradeStore, GradingStatus} from './gradestore';
 import {assignmentSaveGradesRequest, GradeItem, updateGrades} from './moodleapi';
 import styles from "./../css/main.module.css"
+import {LayoutContext} from './layout';
 interface GradeListProps {
   groupId: number;
   courseid: number;
@@ -87,20 +88,24 @@ export function GradeList(props: GradeListProps) {
   let [gradingStatus, setGradingStatus] = React.useState<Array<GradingStatus>>([]);
   React.useEffect(()=>{
     let gradeStore = createGradeStore(context.moodleToken, props.courseid);
-    gradeStore.update(()=>{
+
+    gradeStore.update(props.groupId,()=>{
       setGradeTypes(gradeStore.getAssignments());
     });
   },[]);
 
   React.useEffect(()=>{
-    gradeStore.setGroupId(props.groupId);
-    setGradingStatus(gradeStore.getGradeStatus(selectedGrade));
+    if(gradeStore){
+      gradeStore.fetchGrades(selectedGrade, ()=>{
+        setGradingStatus(gradeStore.getGradeStatus(selectedGrade, props.groupId));
+      });
+    }
   },[props.groupId]);
 
   let changeGrade = (gradeId: number) => {
     setSelectedGrade(gradeId);
     gradeStore.fetchGrades(gradeId, ()=>{
-      setGradingStatus(gradeStore.getGradeStatus(gradeId));
+      setGradingStatus(gradeStore.getGradeStatus(gradeId, props.groupId));
     });
   }
   let changeDiff = (id:number, newDiff: number) => {
@@ -123,10 +128,16 @@ export function GradeList(props: GradeListProps) {
             };}),
         ()=>{
           gradeStore.fetchGrades(selectedGrade, ()=>{
-            setGradingStatus(gradeStore.getGradeStatus(selectedGrade));
+            setGradingStatus(gradeStore.getGradeStatus(selectedGrade, props.groupId));
           });
         });
   }
+
+  let layoutcontext = React.useContext(LayoutContext);
+  const exit = () => {
+    layoutcontext.changeActivity("courses");
+  }
+
   return <div>
     {gradeTypes.length>0?
       <select
@@ -150,7 +161,8 @@ export function GradeList(props: GradeListProps) {
       onClick = {saveGrades}  >
       Send
     </div>
-    <div className = {styles.button+" "+styles.button_reject}>
+    <div className = {styles.button+" "+styles.button_reject}
+      onClick = {exit}>
       Cancel
     </div>
     </div>

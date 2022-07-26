@@ -20,7 +20,6 @@ export function Courses(props: CoursesProps){
   const goToCourse = (id: number) => {
     return () => {
       props.changeActivity('grader',{courseid:id});
-      console.log(id);
     }
   }
 

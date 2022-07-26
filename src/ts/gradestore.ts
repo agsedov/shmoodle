@@ -29,7 +29,6 @@ export interface User {
 
 export class GradeStore {
   courseid: number;
-  groupid: number;
   token: string;
   usergrades: Array<UserGrade>;
   gradeTypes: Array<GradeItem>;
@@ -39,12 +38,8 @@ export class GradeStore {
   constructor(token: string, courseid: number) {
     this.courseid = courseid;
     this.token = token;
-    this.groupid = 0;
   }
 
-  setGroupId(groupId: number) {
-    this.groupid = groupId;
-  }
   fetchAssignments(callback:()=>any){
     assignmentsRequest(this.token,this.courseid, (response)=> {
       let course = response.courses[0];
@@ -65,8 +60,8 @@ export class GradeStore {
     });
   }
 
-  fetchUsers() {
-    usersRequest(this.token,this.courseid,this.groupid, (response) => {
+  fetchUsers(groupid: number) {
+    usersRequest(this.token,this.courseid,groupid, (response) => {
       this.users = response;
     });
   }
@@ -100,10 +95,10 @@ export class GradeStore {
   getUsers(){
     return this.users;
   }
-  getGradeStatus(gradeId: number) {
+  getGradeStatus(gradeId: number, groupid: number) {
     let users : Array<User> = [];
-    if(this.groupid !== 0) {
-      users = this.getUsersByGroup(this.groupid);
+    if(groupid !== 0) {
+      users = this.getUsersByGroup(groupid);
     } else {
       users = this.getUsers();
     }
@@ -127,8 +122,8 @@ export class GradeStore {
     });*/
   }
 
-  update(afterUpdate: ()=>any) {
-    this.fetchUsers();
+  update(groupId:number, afterUpdate: ()=>any) {
+    this.fetchUsers(groupId);
     this.fetchAssignments(afterUpdate);
   }
 }
