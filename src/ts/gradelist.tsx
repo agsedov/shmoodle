@@ -121,12 +121,21 @@ export function GradeList(props: GradeListProps) {
   let saveGrades = () => {
       assignmentSaveGradesRequest(context.moodleToken,
                                    selectedGrade,
-          gradingStatus.map((item)=>
+        gradingStatus.filter(item => item.diff !== 0).
+
+        map((item)=>
             {return {userid: item.id,
                      grade: (item.value+item.diff)+".0",
                      attemptnumber: -1,
-                    addattempt: 0,
-                 workflowstate:"AAA"
+                     addattempt: 0,
+                     workflowstate:"AAA",
+                     plugindata: {
+                       assignfeedbackcomments_editor:{
+                         format: 0,
+                         text:"last edit:" + (new Date().toLocaleString())
+                       }
+                     }
+
             };}),
         ()=>{
           gradeStore.fetchGrades(selectedGrade, ()=>{
