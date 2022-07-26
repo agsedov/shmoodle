@@ -3,7 +3,8 @@ import {GradeItem, assignmentsRequest, gradeItemsRequest, UserGrade, assignmentG
 export interface GradingStatus {name: string,
     id: number,
     value:number,
-    diff:number
+    diff:number,
+    image:string
 };
 
 export interface Assignment {
@@ -24,6 +25,7 @@ export interface Group {
 export interface User {
   id: number,
   fullname: string,
+  profileimageurl: string,
   groups: Array<Group>
 }
 
@@ -108,6 +110,7 @@ export class GradeStore {
     return users.map(user=> {
       let result = {name: user.fullname,
         id: user.id,
+        image: user.profileimageurl,
         value:this.getUserGrade(user.id),
         diff:0};
       return result;

@@ -10,10 +10,11 @@ interface GradeListProps {
 }
 
 interface GradeUserProps {
-  onChange: (newDiff: number) => any,
-  name: string,
-  value: number,
-  diff: number
+    onChange: (newDiff: number) => any,
+    name: string,
+    value: number,
+    diff: number,
+    image: string
 }
 function GradeUser(props: GradeUserProps){
 //  let [touchActive,setTouchActive] = React.useState<boolean>(false);
@@ -76,6 +77,7 @@ function GradeUser(props: GradeUserProps){
     style = {{backgroundColor:color, translate: Math.ceil(touchOffsetX/2)+"px 0px"}}>
     <div className={styles.grade_user_name}>{props.name}</div>
     <div className={styles.grade_user_grades}>
+      <img src={props.image} />
       <div className={styles.grade_user_grade} >{props.value}</div>
       <div className={styles.grade_user_grade} style = {{color: diffcolor}}>{diffText}</div>
     </div>
@@ -153,7 +155,8 @@ export function GradeList(props: GradeListProps) {
     {(selectedGrade!==0)?
       gradingStatus.map((item) => <GradeUser name={item.name}
                                         key={item.id}
-                                     value={item.value}
+        value={item.value}
+        image={item.image}
                                       diff={item.diff}
                                       onChange={(newDiff)=>{changeDiff(item.id,newDiff)}}/>):""}
     </div>
